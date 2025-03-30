@@ -1,4 +1,4 @@
-package com.example.simplenoteapp.presentation
+package com.example.simplenoteapp.presentation.note.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.simplenoteapp.domain.model.Note
