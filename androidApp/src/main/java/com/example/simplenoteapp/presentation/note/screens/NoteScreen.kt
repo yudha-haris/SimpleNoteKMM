@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -23,27 +24,32 @@ import com.example.simplenoteapp.data.repository.InMemoryRepository
 import com.example.simplenoteapp.domain.useCase.NoteUseCases
 import com.example.simplenoteapp.presentation.note.components.NoteItem
 import com.example.simplenoteapp.presentation.note.viewmodels.NoteViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NoteScreen(viewModel: NoteViewModel) {
+fun NoteScreen(
+    viewModel: NoteViewModel = koinViewModel()
+) {
     val notes = viewModel.notes.collectAsState()
 
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         TextField(
             value = title,
-            onValueChange = {title = it},
+            onValueChange = { title = it },
             label = { Text("title") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = content,
-            onValueChange = {content = it},
+            onValueChange = { content = it },
             label = { Text("content") },
             modifier = Modifier.fillMaxWidth()
         )
