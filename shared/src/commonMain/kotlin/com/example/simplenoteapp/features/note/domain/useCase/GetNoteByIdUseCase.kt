@@ -1,8 +1,21 @@
 package com.example.simplenoteapp.features.note.domain.useCase
 
+import com.example.simplenoteapp.core.utils.Result
 import com.example.simplenoteapp.features.note.domain.model.Note
 import com.example.simplenoteapp.features.note.domain.repository.NoteRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class GetNoteByIdUseCase(private val repository: NoteRepository) {
-    suspend operator fun invoke(id: String): Note? = repository.getNoteById(id)
+    operator fun invoke(id: String): Flow<Result<Note?>> = flow {
+        emit(Result.Loading)
+        try {
+            val notes = repository.getNoteById(id)
+            emit(Result.Success(notes))
+        } catch (e: Exception) {
+            emit(Result.Error(message = e.message.toString(), code = e.hashCode()))
+        }
+    }.flowOn(Dispatchers.Default)
 }

@@ -2,19 +2,19 @@ package com.example.simplenoteapp.presentation.note.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simplenoteapp.core.utils.Result
 import com.example.simplenoteapp.features.note.domain.model.Note
 import com.example.simplenoteapp.features.note.domain.useCase.NoteUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
-    val notes: StateFlow<List<Note>> get() = _notes
+    private val _notes = MutableStateFlow<Result<List<Note>>>(Result.Loading)
+    val notes: StateFlow<Result<List<Note>>> get() = _notes
 
     init {
         loadNotes()
@@ -22,7 +22,7 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
 
     private fun loadNotes() {
         viewModelScope.launch {
-            flow { emit(noteUseCases.getNotes()) }
+            noteUseCases.getNotes()
                 .catch { it.printStackTrace() }
                 .collect { _notes.value = it }
         }
@@ -35,7 +35,7 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
             content
         )
         viewModelScope.launch {
-            flow { emit(noteUseCases.addNote(newNote)) }
+            noteUseCases.addNote(newNote)
                 .catch { it.printStackTrace() }
                 .collect { loadNotes() }
         }
@@ -43,9 +43,9 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
 
     fun deleteNote(id: String) {
         viewModelScope.launch {
-            flow { emit(noteUseCases.deleteNote(id)) }
+            noteUseCases.deleteNote(id)
                 .catch { it.printStackTrace() }
-                .collect {loadNotes()}
+                .collect { loadNotes() }
         }
     }
 }
