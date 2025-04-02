@@ -8,10 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.simplenoteapp.data.repository.InMemoryRepository
-import com.example.simplenoteapp.domain.useCase.NoteUseCases
 import com.example.simplenoteapp.presentation.note.screens.NoteScreen
-import com.example.simplenoteapp.presentation.note.viewmodels.NoteViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

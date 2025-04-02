@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -30,6 +31,12 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.koin.core)
+                implementation(libs.ktor.core)
+                implementation(libs.ktor.json)
+                implementation(libs.ktor.logging)
+                implementation(libs.ktor.serialization)
+                implementation(libs.ktor.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx)
             }
         }
 
@@ -39,9 +46,27 @@ kotlin {
             }
         }
 
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.ktor.okhttp)
+            }
+        }
+
+        val iosX64Main by getting {
+            dependencies {
+                implementation(libs.ktor.darwin)
+            }
+        }
+        val iosArm64Main by getting {
+            dependencies {
+                implementation(libs.ktor.darwin)
+            }
+        }
+        val iosSimulatorArm64Main by getting {
+            dependencies {
+                implementation(libs.ktor.darwin)
+            }
+        }
     }
 }
 

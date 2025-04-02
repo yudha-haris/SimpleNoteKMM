@@ -1,10 +1,14 @@
 package com.example.simplenoteapp.presentation.note.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.simplenoteapp.domain.model.Note
-import com.example.simplenoteapp.domain.useCase.NoteUseCases
+import androidx.lifecycle.viewModelScope
+import com.example.simplenoteapp.features.note.domain.model.Note
+import com.example.simplenoteapp.features.note.domain.useCase.NoteUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
@@ -17,7 +21,11 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
     }
 
     private fun loadNotes() {
-        _notes.value = noteUseCases.getNotes();
+        viewModelScope.launch {
+            flow { emit(noteUseCases.getNotes()) }
+                .catch { it.printStackTrace() }
+                .collect { _notes.value = it }
+        }
     }
 
     fun addNote(title: String, content: String) {
@@ -26,12 +34,18 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
             title,
             content
         )
-        noteUseCases.addNote(newNote)
-        loadNotes()
+        viewModelScope.launch {
+            flow { emit(noteUseCases.addNote(newNote)) }
+                .catch { it.printStackTrace() }
+                .collect { loadNotes() }
+        }
     }
 
     fun deleteNote(id: String) {
-        noteUseCases.deleteNote(id)
-        loadNotes()
+        viewModelScope.launch {
+            flow { emit(noteUseCases.deleteNote(id)) }
+                .catch { it.printStackTrace() }
+                .collect {loadNotes()}
+        }
     }
 }
