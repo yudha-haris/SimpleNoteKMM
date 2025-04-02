@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.simplenoteapp.presentation.note.components.NoteItem
 import com.example.simplenoteapp.presentation.note.viewmodels.NoteViewModel
 import org.koin.androidx.compose.koinViewModel
-import com.example.simplenoteapp.core.utils.Result
+import com.example.simplenoteapp.core.utils.ResultState
 import com.example.simplenoteapp.features.note.domain.model.Note
 
 @Composable
@@ -46,12 +46,12 @@ fun NoteScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         when (val state = notesState.value) {
-            is Result.Loading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
-            is Result.Success -> NoteList(
+            is ResultState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+            is ResultState.Success -> NoteList(
                 notes = state.data,
                 onDelete = { id -> viewModel.deleteNote(id) }
             )
-            is Result.Error -> Text(
+            is ResultState.Error -> Text(
                 text = "Error: ${state.message}",
                 color = Color.Red,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
