@@ -28,41 +28,25 @@ class NoteViewModel {
     func loadNotes() {
         self._notes.accept(.loading)
         
-        Observable.create { observer in
-            Task {
-                do {
-                    let data = try await self.noteUseCases.getNotes.invoke()
-                    observer.onNext(UiState.success(data))
-                    observer.onCompleted()
-                } catch {
-                    observer.onNext(UiState.error(error.localizedDescription, 0))
-                }
-            }
-            return Disposables.create()
+        Observable<[Note]>.fromSuspend {
+            try await self.noteUseCases.getNotes.invoke()
         }
         .observe(on: MainScheduler.instance)
-        .subscribe{ [weak self] notes2 in
-            self?._notes.accept(notes2)
-        }
+        .subscribe(
+            onNext: { notes2 in
+                self._notes.accept(.success(notes2))
+            },
+            onError: { error in
+                self._notes.accept(.error(error.localizedDescription, 0))
+            }
+        )
         .disposed(by: disposeBag)
     }
     
     func addNote(title: String, content: String) {
         let note = Note(id: "0", title: title, content: content)
-        
-        Observable<Any>.create { observer in
-            let task =
-                Task {
-                    do {
-                        let _: Void = try await self.noteUseCases.addNote.invoke(note: note)
-                        observer.onCompleted()
-                    } catch {
-                        observer.onNext(UiState<Any>.error(error.localizedDescription, 0))
-                    }
-                }
-            return Disposables.create {
-                task.cancel()
-            }
+        Observable<Void>.fromSuspend {
+            try await self.noteUseCases.addNote.invoke(note: note)
         }
         .observe(on: MainScheduler.instance)
         .subscribe(

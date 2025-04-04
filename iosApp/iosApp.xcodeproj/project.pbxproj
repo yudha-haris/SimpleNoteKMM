@@ -13,7 +13,6 @@
 		D4059B802D9D7F54000AF89D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D4059B7F2D9D7F54000AF89D /* RxSwift */; };
 		D471A3AF2D9B9AC60040BF2F /* main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D471A3AE2D9B9AC60040BF2F /* main.storyboard */; };
 		D471A3B12D9B9C010040BF2F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D471A3B02D9B9BFB0040BF2F /* AppDelegate.swift */; };
-		D4DD96BF2D9BC5170058D93B /* Koin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DD96BE2D9BC5150058D93B /* Koin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,12 +35,11 @@
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D471A3AE2D9B9AC60040BF2F /* main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = main.storyboard; sourceTree = "<group>"; };
 		D471A3B02D9B9BFB0040BF2F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D4DD96BE2D9BC5150058D93B /* Koin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Koin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D426C8502D9FAF990002D92F /* Core */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Core; sourceTree = "<group>"; };
 		D43B75D72D9933F000BDD2A6 /* Presentation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Presentation; sourceTree = "<group>"; };
-		D4EBC4572D9F0F50005389F9 /* Utils */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utils; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,8 +82,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				D4EBC4572D9F0F50005389F9 /* Utils */,
-				D4DD96BE2D9BC5150058D93B /* Koin.swift */,
+				D426C8502D9FAF990002D92F /* Core */,
 				D471A3B02D9B9BFB0040BF2F /* AppDelegate.swift */,
 				D43B75D72D9933F000BDD2A6 /* Presentation */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
@@ -114,8 +111,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				D426C8502D9FAF990002D92F /* Core */,
 				D43B75D72D9933F000BDD2A6 /* Presentation */,
-				D4EBC4572D9F0F50005389F9 /* Utils */,
 			);
 			name = iosApp;
 			productName = iosApp;
@@ -197,7 +194,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D471A3B12D9B9C010040BF2F /* AppDelegate.swift in Sources */,
-				D4DD96BF2D9BC5170058D93B /* Koin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

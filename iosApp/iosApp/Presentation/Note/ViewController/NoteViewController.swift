@@ -54,7 +54,6 @@ class NoteViewController: UIViewController, UITableViewDelegate {
         viewModel.notes.observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] state in
                 switch state {
-                    
                 case .success(let data):
                     self?.notes = data
                     self?.noteTableView.reloadData()
