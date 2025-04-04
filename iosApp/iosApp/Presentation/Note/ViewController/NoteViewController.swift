@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import shared
+import RxSwift
+import RxCocoa
 
 class NoteViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var noteTableView: UITableView!
@@ -17,6 +19,9 @@ class NoteViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var addNoteButton: UIButton!
     
     private let viewModel: NoteViewModel = NoteViewModel()
+    private let disposeBag: DisposeBag = DisposeBag()
+    
+    private var notes: [Note] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +33,10 @@ class NoteViewController: UIViewController, UITableViewDelegate {
         noteTableView.register(
             UINib(nibName: "NoteTableViewCell", bundle: nil), forCellReuseIdentifier: "NoteCell")
         addNoteButton.addTarget(self, action: #selector(addNote), for: .touchUpInside)
+        
+        titleTextField.autocorrectionType = .no
+        setupBindings()
+        viewModel.loadNotes()
     }
     
     @objc func addNote() {
@@ -35,34 +44,49 @@ class NoteViewController: UIViewController, UITableViewDelegate {
               let content = contentTextField.text, !content.isEmpty else {
             return
         }
-         viewModel.addNote(title: title, content: content)
+        viewModel.addNote(title: title, content: content)
         
         titleTextField.text = ""
         contentTextField.text = ""
+    }
+    
+    func setupBindings() {
+        viewModel.notes.observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] state in
+                switch state {
+                    
+                case .success(let data):
+                    self?.notes = data
+                    self?.noteTableView.reloadData()
+                case .error(_, _):
+                    self?.notes = []
+                    self?.noteTableView.reloadData()
+                case .loading:
+                    self?.notes = []
+                    self?.noteTableView.reloadData()
+                }
+            }
+            ).disposed(by: disposeBag)
         
-        noteTableView.reloadData()
     }
 }
 
 extension NoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(
-          withIdentifier: "NoteCell",
-          for: indexPath
+            withIdentifier: "NoteCell",
+            for: indexPath
         ) as? NoteTableViewCell {
-     
-            let note = viewModel.notes[indexPath.row]
+            let note = notes[indexPath.row]
             cell.configure(note: note)
             return cell
         } else {
-     
-          // MARK: Mengembalikan UITableViewCell ketika cell bernilai nil/null.
-          return UITableViewCell()
+            return UITableViewCell()
         }
         
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.notes.count
+        return notes.count
     }
 }
