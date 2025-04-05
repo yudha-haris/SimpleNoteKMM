@@ -1,4 +1,4 @@
-package com.example.simplenoteapp.note.presentation.viewmodels
+package com.example.simplenoteapp.features.note.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,15 +10,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import java.util.UUID
 
-class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
+class NoteListViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
 
     private val _notes = MutableStateFlow<UiState<List<Note>>>(UiState.Loading)
     val notes: StateFlow<UiState<List<Note>>> get() = _notes
 
-    init {
-        loadNotes()
+    fun initNotes() {
+        viewModelScope.launch {
+            _notes.value = UiState.Loading
+            loadNotes()
+        }
     }
 
     private fun loadNotes() {
@@ -31,21 +33,6 @@ class NoteViewModel(private val noteUseCases: NoteUseCases) : ViewModel() {
                         UiState.Error(message = it.message.toString(), code = it.hashCode())
                 }
                 .collect { _notes.value = UiState.Success(it) }
-        }
-    }
-
-    fun addNote(title: String, content: String) {
-        val newNote = Note(
-            id = UUID.randomUUID().toString(),
-            title,
-            content
-        )
-        viewModelScope.launch {
-            flow {
-                emit(noteUseCases.addNote(newNote))
-            }
-                .catch { it.printStackTrace() }
-                .collect { loadNotes() }
         }
     }
 
