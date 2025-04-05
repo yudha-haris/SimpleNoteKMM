@@ -1,4 +1,4 @@
-package com.example.simplenoteapp.presentation.note.screens
+package com.example.simplenoteapp.note.presentation.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,11 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.simplenoteapp.presentation.note.components.NoteItem
-import com.example.simplenoteapp.presentation.note.viewmodels.NoteViewModel
-import org.koin.androidx.compose.koinViewModel
-import com.example.simplenoteapp.core.utils.ResultState
+import com.example.simplenoteapp.core.utils.UiState
 import com.example.simplenoteapp.features.note.domain.model.Note
+import com.example.simplenoteapp.note.presentation.components.NoteItem
+import com.example.simplenoteapp.note.presentation.viewmodels.NoteViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NoteScreen(
@@ -46,12 +46,12 @@ fun NoteScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         when (val state = notesState.value) {
-            is ResultState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
-            is ResultState.Success -> NoteList(
+            is UiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+            is UiState.Success -> NoteList(
                 notes = state.data,
                 onDelete = { id -> viewModel.deleteNote(id) }
             )
-            is ResultState.Error -> Text(
+            is UiState.Error -> Text(
                 text = "Error: ${state.message}",
                 color = Color.Red,
                 modifier = Modifier.align(Alignment.CenterHorizontally)

@@ -1,7 +1,7 @@
-package com.example.simplenoteapp.android
+package com.example.simplenoteapp
 
 import android.app.Application
-import com.example.simplenoteapp.presentation.note.di.noteModule
+import com.example.simplenoteapp.note.di.noteModule
 import com.example.simplenoteapp.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

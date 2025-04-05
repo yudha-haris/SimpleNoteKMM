@@ -1,4 +1,4 @@
-package com.example.simplenoteapp.android
+package com.example.simplenoteapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.simplenoteapp.presentation.note.screens.NoteScreen
+import com.example.simplenoteapp.note.presentation.screens.NoteScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
