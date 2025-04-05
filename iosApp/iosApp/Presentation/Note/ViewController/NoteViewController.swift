@@ -55,14 +55,14 @@ class NoteViewController: UIViewController, UITableViewDelegate {
             .subscribe(onNext: { [weak self] state in
                 switch state {
                 case .success(let data):
+                    self?.addNoteButton.isEnabled = true
                     self?.notes = data
                     self?.noteTableView.reloadData()
                 case .error(_, _):
-                    self?.notes = []
+                    self?.addNoteButton.isEnabled = true
                     self?.noteTableView.reloadData()
                 case .loading:
-                    self?.notes = []
-                    self?.noteTableView.reloadData()
+                    self?.addNoteButton.isEnabled = false
                 }
             }
             ).disposed(by: disposeBag)

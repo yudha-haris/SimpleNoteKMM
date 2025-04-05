@@ -31,7 +31,7 @@ class NoteViewModel {
         Observable<[Note]>.fromSuspend {
             try await self.noteUseCases.getNotes.invoke()
         }
-        .observe(on: MainScheduler.instance)
+        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .subscribe(
             onNext: { notes2 in
                 self._notes.accept(.success(notes2))
@@ -45,12 +45,13 @@ class NoteViewModel {
     
     func addNote(title: String, content: String) {
         let note = Note(id: "0", title: title, content: content)
-        Observable<Void>.fromSuspend {
+        self._notes.accept(.loading)
+        Single<Void>.fromSuspend {
             try await self.noteUseCases.addNote.invoke(note: note)
         }
-        .observe(on: MainScheduler.instance)
+        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .subscribe(
-            onCompleted: { 
+            onSuccess: { 
                 self.loadNotes()
             }
         )
