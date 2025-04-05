@@ -12,7 +12,7 @@ import shared
 import RxSwift
 import RxCocoa
 
-class NoteViewController: UIViewController, UITableViewDelegate {
+class NoteViewController: UIViewController {
     @IBOutlet weak var noteTableView: UITableView!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentTextField: UITextField!
@@ -87,5 +87,19 @@ extension NoteViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notes.count
+    }
+}
+
+extension NoteViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "moveToNoteDetail", sender: notes[indexPath.row].id)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "moveToNoteDetail" {
+            if let destination = segue.destination as? NoteDetailViewController {
+                destination.noteId = (sender as? String)!
+            }
+        }
     }
 }
