@@ -55,6 +55,7 @@ class NoteDetailViewModel {
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .subscribe(
             onSuccess: {
+                self._onSuccess.onNext(())
                 self._onSuccess.onCompleted()
             },
             onFailure: { it in

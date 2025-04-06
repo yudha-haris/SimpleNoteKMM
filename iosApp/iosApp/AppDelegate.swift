@@ -15,12 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         KoinHelperKt.doInitKoin()
-        let storyboard = UIStoryboard(name: "main", bundle: nil)
-        let rootViewController = storyboard.instantiateViewController(identifier: "NoteViewController")
         
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
+        let storyboard = UIStoryboard(name: "main", bundle: nil)
+            let rootViewController = storyboard.instantiateViewController(identifier: "NoteViewController")
+            
+            let navigationController = UINavigationController(rootViewController: rootViewController)
+            
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.rootViewController = navigationController
+            window?.makeKeyAndVisible()
+        
         return true
     }
 }

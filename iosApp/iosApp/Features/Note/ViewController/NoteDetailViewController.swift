@@ -49,8 +49,9 @@ class NoteDetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.onSuccess.observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: {
-                
+            .subscribe(onSuccess: { [weak self] in
+                self?.saveButton.isEnabled = true
+                self?.navigationController?.popViewController(animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -60,6 +61,7 @@ class NoteDetailViewController: UIViewController {
               let content = contentTextField.text, !content.isEmpty else {
             return
         }
+        saveButton.isEnabled = false
         viewModel.addNote(title: title, content: content)
         
     }

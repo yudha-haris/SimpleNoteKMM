@@ -23,6 +23,11 @@ class NoteViewController: UIViewController {
     
     private var notes: [Note] = []
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadNotes()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -36,7 +41,6 @@ class NoteViewController: UIViewController {
         
         titleTextField.autocorrectionType = .no
         setupBindings()
-        viewModel.loadNotes()
     }
     
     @objc func addNote() {

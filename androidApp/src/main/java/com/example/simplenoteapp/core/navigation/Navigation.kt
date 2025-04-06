@@ -15,7 +15,6 @@ object Destinations {
     const val NOTE_DETAIL = "note_detail"
     const val NOTE_ID_ARG = "noteId"
 
-    // Deep link URI
     const val DEEP_LINK_URI = "simplenoteapp://notes"
 }
 

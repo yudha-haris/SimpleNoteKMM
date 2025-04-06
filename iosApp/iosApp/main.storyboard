@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Note View Controller-->
+        <!--MyNote-->
         <scene sceneID="iih-Qt-ISt">
             <objects>
                 <viewController storyboardIdentifier="NoteViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="gjs-jv-xJA" customClass="NoteViewController" customModule="iosApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -57,7 +57,7 @@
                             <constraint firstItem="Wcn-bE-iKM" firstAttribute="leading" secondItem="8Tp-1h-dtf" secondAttribute="leading" constant="16" id="z8u-hW-Jv1"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="pan-hx-jp8"/>
+                    <navigationItem key="navigationItem" title="MyNote" id="pan-hx-jp8"/>
                     <connections>
                         <outlet property="addNoteButton" destination="9dQ-MR-lGr" id="xaJ-eF-Eat"/>
                         <outlet property="contentTextField" destination="JMb-N7-Xiq" id="IDe-Ed-Tt5"/>
