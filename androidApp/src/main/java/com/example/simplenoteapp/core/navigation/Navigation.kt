@@ -7,7 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.example.simplenoteapp.features.note.presentation.screens.NoteDetailRoot
 import com.example.simplenoteapp.features.note.presentation.screens.NoteDetailScreen
+import com.example.simplenoteapp.features.note.presentation.screens.NoteListRoot
 import com.example.simplenoteapp.features.note.presentation.screens.NoteListScreen
 
 object Destinations {
@@ -26,7 +28,7 @@ fun NoteNavHost(navController: NavHostController) {
     ) {
         // Note list screen
         composable(Destinations.NOTE_LIST) {
-            NoteListScreen(
+            NoteListRoot (
                 onNoteClick = { noteId ->
                     navController.navigate("${Destinations.NOTE_DETAIL}/$noteId")
                 },
@@ -52,7 +54,7 @@ fun NoteNavHost(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val noteId = backStackEntry.arguments?.getString(Destinations.NOTE_ID_ARG) ?: "new"
-            NoteDetailScreen(
+            NoteDetailRoot (
                 noteId = noteId,
                 onNavigateBack = {
                     navController.previousBackStackEntry?.savedStateHandle?.set("refresh", true)

@@ -28,22 +28,41 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.example.simplenoteapp.core.ui.components.atom.shimmerLoading
 import com.example.simplenoteapp.core.utils.UiState
+import com.example.simplenoteapp.features.note.domain.model.Note
 import com.example.simplenoteapp.features.note.presentation.components.NoteList
 import com.example.simplenoteapp.features.note.presentation.viewmodels.NoteListViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@Composable
+fun NoteListRoot(
+    onNoteClick: (String) -> Unit,
+    onAddNewNote: () -> Unit,
+) {
+    val viewModel: NoteListViewModel = koinViewModel()
+    val notesState by viewModel.notes.collectAsState()
+
+    NoteListScreen(
+        notesState = notesState,
+        onInitNotes = viewModel::initNotes,
+        onDeleteNote = viewModel::deleteNote,
+        onNoteClick = onNoteClick,
+        onAddNewNote = onAddNewNote
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteListScreen(
+    notesState: UiState<List<Note>>,
+    onInitNotes: () -> Unit,
+    onDeleteNote: (String) -> Unit,
     onNoteClick: (String) -> Unit,
     onAddNewNote: () -> Unit,
-    viewModel: NoteListViewModel = koinViewModel()
 ) {
-    val notesState by viewModel.notes.collectAsState()
     val isDarkTheme = isSystemInDarkTheme()
 
     LaunchedEffect(Unit) {
-        viewModel.initNotes()
+        onInitNotes()
     }
 
     val backgroundBrush = if (isDarkTheme) {
@@ -90,9 +109,7 @@ fun NoteListScreen(
         ) {
             PullToRefreshBox(
                 isRefreshing = notesState is UiState.Loading,
-                onRefresh = {
-                    viewModel.initNotes()
-                },
+                onRefresh = onInitNotes,
             ) {
                 when (val state = notesState) {
                     is UiState.Loading -> {
@@ -111,13 +128,15 @@ fun NoteListScreen(
                             }
                         }
                     }
+
                     is UiState.Success -> {
                         NoteList(
                             notes = state.data,
                             onNoteClick = onNoteClick,
-                            onDeleteNote = { viewModel.deleteNote(it) },
+                            onDeleteNote = onDeleteNote,
                         )
                     }
+
                     is UiState.Error -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),

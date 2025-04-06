@@ -31,19 +31,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.simplenoteapp.core.utils.UiState
+import com.example.simplenoteapp.features.note.domain.model.Note
 import com.example.simplenoteapp.features.note.presentation.components.NoteEditContent
 import com.example.simplenoteapp.features.note.presentation.viewmodels.NoteDetailViewModel
 import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun NoteDetailRoot(
+    noteId: String,
+    onNavigateBack: () -> Unit,
+) {
+    val viewModel: NoteDetailViewModel = koinViewModel()
+
+    val noteState by viewModel.currentNote.collectAsState()
+
+    NoteDetailScreen(
+        noteId = noteId,
+        noteState = noteState,
+        onGetNoteById = viewModel::getNoteById,
+        onSaveNote = viewModel::saveNote,
+        onDeleteNote = viewModel::deleteNote,
+        onNavigateBack = onNavigateBack
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteDetailScreen(
     noteId: String,
+    noteState: UiState<Note?>,
+    onGetNoteById: (String) -> Unit,
+    onSaveNote: (String, String, String) -> Boolean,
+    onDeleteNote: (String) -> Unit,
     onNavigateBack: () -> Unit,
-    viewModel: NoteDetailViewModel = koinViewModel()
 ) {
-    val noteState by viewModel.currentNote.collectAsState()
     val isDarkTheme = isSystemInDarkTheme()
 
     var title by remember { mutableStateOf("") }
@@ -67,11 +90,11 @@ fun NoteDetailScreen(
         )
     }
 
-    LaunchedEffect(key1 = noteId) {
-        viewModel.getNoteById(noteId)
+    LaunchedEffect(noteId) {
+        onGetNoteById(noteId)
     }
 
-    LaunchedEffect(key1 = noteState) {
+    LaunchedEffect(noteState) {
         when (val state = noteState) {
             is UiState.Success -> {
                 if (state.data != null) {
@@ -79,12 +102,12 @@ fun NoteDetailScreen(
                     content = state.data.content
                     isNewNote = false
                 } else {
-                    // New note
                     title = ""
                     content = ""
                     isNewNote = true
                 }
             }
+
             else -> {}
         }
     }
@@ -97,7 +120,7 @@ fun NoteDetailScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.deleteNote(noteId)
+                        onDeleteNote(noteId)
                         showDeleteDialog = false
                         onNavigateBack()
                     }
@@ -143,7 +166,7 @@ fun NoteDetailScreen(
                     }
 
                     IconButton(onClick = {
-                        if (viewModel.saveNote(noteId, title, content)) {
+                        if (onSaveNote(noteId, title, content)) {
                             onNavigateBack()
                         }
                     }) {
@@ -168,15 +191,13 @@ fun NoteDetailScreen(
                 .background(brush = backgroundBrush)
                 .padding(padding)
         ) {
-            when (val state = noteState) {
+            when (noteState) {
                 is UiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
                 }
+
                 is UiState.Success -> {
                     NoteEditContent(
                         title = title,
@@ -185,13 +206,11 @@ fun NoteDetailScreen(
                         onContentChange = { content = it }
                     )
                 }
+
                 is UiState.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            text = "Error: ${state.message}",
+                            text = "Error: ${noteState.message}",
                             color = MaterialTheme.colorScheme.error
                         )
                     }
@@ -199,4 +218,17 @@ fun NoteDetailScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun NoteDetailScreenPreview() {
+    NoteDetailScreen(
+        noteId = "1",
+        noteState = UiState.Success(Note("1", "Preview", "This is preview")),
+        onGetNoteById = {},
+        onSaveNote = { _, _, _ -> true },
+        onDeleteNote = {},
+        onNavigateBack = {}
+    )
 }
